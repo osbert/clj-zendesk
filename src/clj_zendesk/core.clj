@@ -19,7 +19,8 @@
             [inflections.core :refer [singular plural capitalize]]
             [cemerick.url :as url]
             [camel-snake-kebab.core :refer [->snake_case ->CamelCase]]
-            [cheshire.core :refer [generate-string parse-string]]))
+            [cheshire.core :refer [generate-string parse-string]]
+            [clojure.string :as str]))
 
 
 (def ^:dynamic defaults {:domain    "zendesk.com"
@@ -87,6 +88,7 @@
   (get-all [_])
   (get-one [_ id])
   (create-one [_ data])
+  (import-one [_ data])
   (update-one [_ id data])
   (delete-one [_ id]))
 
@@ -113,6 +115,8 @@
 
 ;; `create` corresponds to a POST on the root of a resource (e.g. /api/v2/users.json)
 
+;; `import` corresponds to a POST on the imports endpoint of a resource (e.g. /api/v2/imports/users.json)
+
 ;; `delete` corresponds to a GET on a specific resource (e.g. /api/v2//users/3.json)
 
 ;; I haven't implemented `update` yet because I forgot and haven't had time!
@@ -136,6 +140,11 @@
   (create-one [_ data]
     ((singular resource-name) (api-call :post
                                         (base-url resource-name)
+                                        nil
+                                        {(singular resource-name) data})))
+  (import-one [_ data]
+    ((singular resource-name) (api-call :post
+                                        (str "imports/" (base-url resource-name))
                                         nil
                                         {(singular resource-name) data})))
   (delete-one [_ id]
