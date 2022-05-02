@@ -18,7 +18,7 @@
             [clj-zendesk.util :refer [map-all-keys kebabify-map underscorify-map]]
             [inflections.core :refer [singular plural capitalize]]
             [cemerick.url :as url]
-            [camel-snake-kebab.core :refer [->snake_case ->CamelCase]]
+            [camel-snake-kebab.core :refer [->snake_case ->camelCase]]
             [cheshire.core :refer [generate-string parse-string]]
             [clojure.string :as str]))
 
@@ -157,7 +157,7 @@
   [resource-name]
   (let [resource-symbol# `~(-> resource-name
                                name
-                               ->CamelCase
+                               ->camelCase
                                symbol)
         singular-symbol# `~(singular resource-symbol#)]
     `(do
